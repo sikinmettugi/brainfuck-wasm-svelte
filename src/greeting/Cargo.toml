@@ -1,0 +1,29 @@
+[package]
+name = "svelte-wasm-brainf-greeting"
+version = "0.1.0"
+authors = ["CJ Lee <changlee@ea.com>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+wee_alloc = "^0.4"
+wasm-bindgen = "^0.2"
+console_error_panic_hook = { version = "^0.1", optional = true }
+phf = { version = "0.8.0", features = ["macros"] }
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  "console",
+]
+
+[dev-dependencies]
+wasm-bindgen-test = "^0.3"
+
+[profile.release]
+opt-level = "s"
