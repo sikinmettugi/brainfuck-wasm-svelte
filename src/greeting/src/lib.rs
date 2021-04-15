@@ -91,19 +91,19 @@ impl BfMachineState {
     pub fn output(&self) -> String {
         self.out_str.as_str().into()
     }
+
+    pub fn get_index(&self) -> usize {
+        self.index
+    }
+
+    pub fn get_tape_value(&self, i: usize) -> Option<u8> {
+        if i < self.tape.len() { Some(self.tape[i]) } else { None }
+    }
+
+    pub fn get_display_tapes(&self, i: usize) -> Vec<u8> {
+        if i < self.tape.len() { self.tape[0..i].iter().cloned().collect() } else { self.tape.clone() }
+    }
 }
-
-
-
-// impl fmt::Display for BfMachineState {
-
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
-
-//         write!(f, "{}", &self.out_str);
-
-//         Ok(())
-//     }
-// }
 
 #[wasm_bindgen]
 impl BfProgram {
@@ -139,6 +139,7 @@ impl BfProgram {
                         },
                         None => {
                             // TODO: what if the crotches are not in pair?
+                            return Err(JsValue::from("invalid crotchet pairs: no [ matched"));
                         }
                     }
                 }
@@ -148,12 +149,16 @@ impl BfProgram {
         }
 
         instructions.push(BfInstruction::End);
-        // TODO: what if the crotches are not in pair?
 
-        Ok(BfProgram{
-            instructions: instructions,
-            index: 0,
-        })
+        // invalid crotchets throws error
+        if !crotchets.is_empty() {
+            Err(JsValue::from("invalid crotchet pairs: no ] matched"))
+        } else {
+            Ok(BfProgram{
+                instructions: instructions,
+                index: 0,
+            })
+        }
     }
 
     pub fn step(&mut self, state: &mut BfMachineState) {
@@ -190,5 +195,8 @@ impl BfProgram {
             log!("index: {:?}, instruction: {:?}, output: {:?}", &state.index, self.instructions[self.index], &state.output());
             self.step(&mut state);
         }
+
+        log!("tape: {:?}", &state.get_display_tapes(32));
+        log!("index: {:?}, instruction: {:?}, output: {:?}", &state.index, self.instructions[self.index], &state.output());
     }
 }

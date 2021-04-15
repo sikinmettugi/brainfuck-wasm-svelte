@@ -2,13 +2,14 @@
 	import BfInterface from './BfInterface.svelte';
 	export let state;
 	export let program;
+	export let newState;
 </script>
 
 <main>
 	<h1>brainf-wasm</h1>
 	<p>A BrainF*ck Interpreter compiled into WASM loaded on Svelte</p>
 	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-	<BfInterface state={state} program={program} />
+	<BfInterface state={state} program={program} newState={newState} />
 </main>
 
 <style>

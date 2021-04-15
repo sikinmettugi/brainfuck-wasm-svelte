@@ -10,6 +10,7 @@ const init = async() => {
 	const app = new App({
 		target: document.body,
 		props: {
+			newState: bfState.new,
 			state: initialState,
 			program: greet.BfProgram,
 		}
