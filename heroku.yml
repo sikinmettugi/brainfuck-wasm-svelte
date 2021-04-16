@@ -1,4 +1,0 @@
-build:
-  docker:
-    web: Dockerfile
-# no "run" section to use CMD in Dockerfile
