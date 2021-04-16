@@ -7,8 +7,8 @@
     "start": "node main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "CJ Lee <changlee@ea.com>",
-  "license": "ISC",
+  "author": "CJ Lee <sikinmettugi@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1"
