@@ -55,3 +55,28 @@ fn program_with_invalid_crochets() {
 
     assert_eq!(program_res.is_err(), true);
 }
+
+#[wasm_bindgen_test]
+fn state_with_inputs() {
+    let mut state = BfMachineState::new();
+    state.push_input(&[5, 6]);
+
+    assert_eq!(state.get_input(), Some(5));
+    assert_eq!(state.get_input(), Some(6));
+    assert_eq!(state.get_input(), None);
+}
+
+#[wasm_bindgen_test]
+fn program_with_input_valid_counts() {
+    let input_then_sum: String = String::from(",[[>+>+<<-]>-[<+>-]<]>>.");
+    let program_res = BfProgram::parse(input_then_sum);
+    let mut state = BfMachineState::new();
+    state.push_input(&[5]);
+
+    assert_eq!(program_res.is_ok(), true);
+    assert_eq!(state.log_input(), Some(5));
+    let mut program = program_res.unwrap();
+    program.execute(&mut state);
+
+    assert_eq!(state.get_index(), 2);
+}

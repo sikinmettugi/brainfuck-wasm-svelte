@@ -5,36 +5,62 @@
 	export let program;
     export let newState;
 
-    let programIndex = 0;
-    let tapeIndex = 0;
+    let inputStr = "";
     const outputPlaceholder = "(stream output shows here)";
     let outputStr = outputPlaceholder;
-    let switch1 = false;
+    let showHex = false;
 
     let programStr = "";
     let machineInstance = {};
     let errorStr = "";
 
-    function run() {
-        console.log("button clicked, running");
-        outputStr = switch1 ? outputPlaceholder : "updated";
-        switch1 = !switch1;
+    function isU8(ch) {
+        return !isNaN(ch)
+            && !isNaN(parseFloat(ch))
+            && parseInt(ch) >= 0
+            && parseInt(ch) < 256;
+    }
 
+    function pushInput(machine) {
+        let splitted = inputStr.split(/[\s,]+/);
+        console.log(splitted);
+
+        if (!splitted.every((n) => isU8(n))) {
+            return false;
+        }
+
+        machine.push_input(splitted.map(n => parseInt(n)));
+        return true;
+    }
+
+    function run() {
         if (!programStr) {
             errorStr = "The program is empty!";
             return;
         }
+
         try {
             state = newState();
             machineInstance = program.parse(programStr);
+            console.log(typeof machineInstance, machineInstance);
+            if (machineInstance.needs_input()) {
+                if (!inputStr) {
+                    throw new Error("The input is empty!");
+                }
+
+                if (!pushInput(state)) {
+                    throw new Error("Invalid input: should be a space/comma separated unsigned 8-bit integers!");
+                }
+
+            }
+            
             machineInstance.execute(state);
-            outputStr = state.output();
+            outputStr = showHex ? state.output_dec() : state.output();
             errorStr = "";
         } catch (ex) {
             console.error(ex);
             errorStr = ex.toString();
         }
-
     }
 </script>
 
@@ -47,19 +73,16 @@
         tapes={state.get_display_tapes(32)}
         tapeIndex={state.get_index()}
     />
-    <!-- <div id="bf-machine-state-area">
-        <p>(current machine state here)</p>
-        <p>
-            program index: {programIndex}<br>
-            tape index: {state.get_index()}
-        </p>
-    </div> -->
     <section class="bf-interface-io">
-        <div id="bf-interface-output-area">
+        <div id="bf-interface-input-area">
             Input:
-            <textarea id="bf-input-stream"></textarea>
+            <textarea id="bf-input-stream" bind:value={inputStr}></textarea>
+        </div>
+        <div id="bf-interface-output-area">
             Output:
             <textarea id="bf-output-stream" name="bf-output-stream" readonly>{outputStr}</textarea>
+            <br>
+            <input type="checkbox" id="bf-output-print-hex" bind:checked={showHex}/><label for="bf-output-print-hex">Print in dec</label>
         </div>
         <div id="bf-interface-errors">
             {#if errorStr}

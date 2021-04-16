@@ -57,6 +57,8 @@ pub enum BfInstruction {
 pub struct BfMachineState {
     tape: Vec<u8>,
     index: usize,
+    inputs: Vec<u8>,
+    input_idx: usize,
     out_str: String,
 }
 
@@ -65,6 +67,7 @@ pub struct BfMachineState {
 pub struct BfProgram {
     instructions: Vec<BfInstruction>,
     index: usize,
+    needs_input: bool,
 }
 
 static CHAR_TO_INST_MAP: phf::Map<char, BfInstruction> = phf_map! {
@@ -84,6 +87,8 @@ impl BfMachineState {
         BfMachineState {
             tape: vec![0; 3000],
             index: 0,
+            inputs: Vec::new(),
+            input_idx: 0,
             out_str: String::new(),
         }
     }
@@ -92,8 +97,50 @@ impl BfMachineState {
         self.out_str.as_str().into()
     }
 
+    pub fn output_dec(&self) -> String {
+        let hex_str: String = self.out_str.chars().map(|c| {
+            let mut c_u8 = c as u8;
+            let mut cur_hex: Vec<char> = Vec::new();
+            while c_u8 > 0 {
+                cur_hex.push(((c_u8 % 10) + ('0' as u8)) as char);
+                c_u8 /= 10;
+            }
+            // log!("{:?}", &cur_hex);
+            cur_hex.reverse();
+            cur_hex.into_iter().collect()
+        }).collect::<Vec<String>>().join(" ");
+
+        hex_str
+    }
+
     pub fn get_index(&self) -> usize {
         self.index
+    }
+
+    pub fn push_input(&mut self, inputs: &[u8]) {
+        // self.inputs.copy_from_slice(inputs);
+        self.inputs = Vec::from(inputs);
+        self.input_idx = 0;
+    }
+
+    pub fn get_input(&mut self) -> Option<u8> {
+        if self.input_idx >= self.inputs.len() {
+            None
+        } else {
+            let idx = self.input_idx;
+            self.input_idx += 1;
+            Some(self.inputs[idx])
+        }
+    }
+
+    pub fn log_input(&self) -> Option<u8> {
+        log!("input: {:?}, idx: {:?}", self.inputs, self.input_idx);
+
+        if self.input_idx >= self.inputs.len() {
+            None
+        } else {
+            Some(self.inputs[self.input_idx])
+        }
     }
 
     pub fn get_tape_value(&self, i: usize) -> Option<u8> {
@@ -114,7 +161,7 @@ impl BfProgram {
         let mut instructions : Vec<BfInstruction> = Vec::new();
         // stack for "[" and "]"
         let mut crotchets: Vec<usize> = Vec::new();
-
+        let mut needs_input = false;
         // TODO: how to check if the program is valid?
         // how to alert the frontend that the input program is invald?
         for (i, c) in prg.chars().enumerate() {
@@ -143,6 +190,9 @@ impl BfProgram {
                         }
                     }
                 }
+                BfInstruction::Input => {
+                    needs_input = true;
+                }
                 _ => {},
             }
             instructions.push(cur_inst);
@@ -154,9 +204,10 @@ impl BfProgram {
         if !crotchets.is_empty() {
             Err(JsValue::from("invalid crotchet pairs: no ] matched"))
         } else {
-            Ok(BfProgram{
+            Ok(BfProgram {
                 instructions: instructions,
                 index: 0,
+                needs_input: needs_input,
             })
         }
     }
@@ -176,12 +227,20 @@ impl BfProgram {
             BfInstruction::Decrement => state.tape[state.index] = state.tape[state.index].wrapping_sub(1),
             BfInstruction::Output => state.out_str.push(state.tape[state.index] as char),
             BfInstruction::Input => {
-                // TODO
-
+                log!("inputs: {:?}", state.log_input());
+                match state.get_input() {
+                    Some(i) => state.tape[state.index] = i,
+                    None => {
+                        // err
+                        log!("Warning: no more inputs!");
+                    },
+                }
                 // possible implementation: early return if input is empty, otherwise try to process it
             },
-            BfInstruction::JumpOpen(offset) => self.index = if state.tape[state.index] == 0 { self.index + offset } else { self.index },
-            BfInstruction::JumpClose(offset) => self.index = if state.tape[state.index] != 0 { self.index - offset - 1 } else { self.index },
+            BfInstruction::JumpOpen(offset) => self.index =
+                if state.tape[state.index] == 0 { self.index + offset } else { self.index },
+            BfInstruction::JumpClose(offset) => self.index =
+                if state.tape[state.index] != 0 { self.index - offset - 1 } else { self.index },
             BfInstruction::Comment(_) => { },
             BfInstruction::End => return,
         }
@@ -190,13 +249,25 @@ impl BfProgram {
     }
 
     pub fn execute(&mut self, mut state: &mut BfMachineState) {
-        while self.index < self.instructions.len() && self.instructions[self.index] != BfInstruction::End {
-            log!("tape: {:?}", &state.tape[0..32]);
-            log!("index: {:?}, instruction: {:?}, output: {:?}", &state.index, self.instructions[self.index], &state.output());
+        while self.can_execute(state) {
+            // log!("tape: {:?}", &state.tape[0..32]);
+            // log!("index: {:?}, instruction: {:?}, input: {:?}, output: {:?}", 
+            //     &state.index, self.instructions[self.index], &state.log_input(), &state.output());
             self.step(&mut state);
         }
 
-        log!("tape: {:?}", &state.get_display_tapes(32));
-        log!("index: {:?}, instruction: {:?}, output: {:?}", &state.index, self.instructions[self.index], &state.output());
+        // log!("tape: {:?}", &state.get_display_tapes(32));
+        // log!("index: {:?}, instruction: {:?}, output: {:?}", &state.index, self.instructions[self.index], &state.output());
+        // log!("end");
+    }
+
+    pub fn needs_input(&self) -> bool {
+        self.needs_input
+    }
+
+    fn can_execute(&self, state: &mut BfMachineState) -> bool {
+        self.index < self.instructions.len()
+            && self.instructions[self.index] != BfInstruction::End
+            && !(self.instructions[self.index] == BfInstruction::Input && state.log_input().is_none())
     }
 }
