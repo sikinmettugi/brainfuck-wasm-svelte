@@ -1,5 +1,6 @@
 import App from './App.svelte';
 import wasm from './greeting/Cargo.toml';
+import { presets } from './presets.js';
 
 const init = async() => {
 	const greet = await wasm();
@@ -13,6 +14,7 @@ const init = async() => {
 			newState: bfState.new,
 			state: initialState,
 			program: greet.BfProgram,
+			presets: presets,
 		}
 	});
 };

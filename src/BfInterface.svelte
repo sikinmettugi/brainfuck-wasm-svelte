@@ -4,11 +4,12 @@
     export let state;
 	export let program;
     export let newState;
+    export let presets;
 
     let inputStr = "";
     const outputPlaceholder = "(stream output shows here)";
     let outputStr = outputPlaceholder;
-    let showHex = false;
+    let showDec = false;
 
     let programStr = "";
     let machineInstance = {};
@@ -55,12 +56,30 @@
             }
             
             machineInstance.execute(state);
-            outputStr = showHex ? state.output_dec() : state.output();
+            outputStr = showDec ? state.output_dec() : state.output();
             errorStr = "";
         } catch (ex) {
             console.error(ex);
             errorStr = ex.toString();
         }
+    }
+
+    function runPresets(preset) {
+        if (!preset) {
+            return;
+        }
+
+        console.log("running preset", preset);
+
+        programStr = preset.program;
+        showDec = preset.outputAsDec;
+        if (preset.inputs) {
+            inputStr = preset.inputs;
+        }
+
+
+
+        run();
     }
 </script>
 
@@ -82,12 +101,24 @@
             Output:
             <textarea id="bf-output-stream" name="bf-output-stream" readonly>{outputStr}</textarea>
             <br>
-            <input type="checkbox" id="bf-output-print-hex" bind:checked={showHex}/><label for="bf-output-print-hex">Print in dec</label>
+            <input type="checkbox" id="bf-output-print-hex" bind:checked={showDec}/><label for="bf-output-print-hex">Print in dec</label>
         </div>
         <div id="bf-interface-errors">
             {#if errorStr}
             <div id="bf-interface-error-box">{errorStr}</div>
             {/if}
+        </div>
+    </section>
+    <section class="bf-interface-preset">
+        <div id="bf-interface-presets">
+            <ul class="presets">
+                {#each presets as ps}
+                    <li>
+                        <button on:click={runPresets(ps)}>{ps.description}</button>
+                    </li>
+                {/each}
+            </ul>
+
         </div>
     </section>
 </div>
@@ -96,6 +127,20 @@
     section {
         display: block;
     }
+
+    ul.presets li {
+        display: inline-block;
+        list-style-type: none;
+        /* border: 1px solid #aeaeae; */
+        /* width: 30px; */
+        height: 23px;
+        text-align: center;
+        padding-top: 7px;
+        padding-left: 10px;
+        /* border-right: none; */
+        color: gray;
+    }
+
 	#bf-interface {
 		text-align: center;
 		padding: 1em;
