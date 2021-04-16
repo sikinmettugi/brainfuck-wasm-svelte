@@ -76,10 +76,6 @@
         if (preset.inputs) {
             inputStr = preset.inputs;
         }
-
-
-
-        run();
     }
 </script>
 
