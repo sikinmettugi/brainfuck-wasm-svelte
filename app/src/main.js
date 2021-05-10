@@ -5,7 +5,7 @@ import { presets } from './presets.js';
 const init = async() => {
 	const greet = await wasm();
 
-	console.log(greet);
+	// console.log(greet);
 	const bfState = greet.BfMachineState;
 	const initialState = bfState.new();
 	const app = new App({

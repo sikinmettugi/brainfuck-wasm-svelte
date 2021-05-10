@@ -36,7 +36,7 @@
 
     function pushInput(machine) {
         let splitted = inputStr.split(/[\s,]+/);
-        console.log(splitted);
+        // console.log(splitted);
 
         if (!splitted.every((n) => isU8(n))) {
             return false;
@@ -70,7 +70,7 @@
             paused = false;
             state = newState();
             machineInstance = program.parse(programStr);
-            console.log(typeof machineInstance, machineInstance);
+            // console.log(typeof machineInstance, machineInstance);
             if (machineInstance.needs_input()) {
                 if (!inputStr) {
                     throw new Error("The input is empty!");
@@ -103,7 +103,7 @@
             return;
         }
 
-        console.log("running preset", preset);
+        // console.log("running preset", preset);
 
         programStr = preset.program;
         showDec = preset.outputAsDec;
