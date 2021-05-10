@@ -1,5 +1,7 @@
 <script>
+    import { onDestroy } from 'svelte';
     import BfMachineState from './BfMachineState.svelte';
+    import BfProgramInputBox from './BfProgramInputBox.svelte';
 
     export let state;
 	export let program;
@@ -14,6 +16,19 @@
     let programStr = "";
     let machineInstance = {};
     let errorStr = "";
+    let programIndex = 0;
+
+    let paused = true;
+    // let tickCount = 0;
+    const STEP_INTERVAL_MS = 500;
+
+    $: tapes = state.get_display_tapes(32);
+    $: tapeIndex = state.get_index();
+    // $: programIndex = !paused && machineInstance ? machineInstance.get_index() : 0;
+
+    function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
     function isU8(ch) {
         return !isNaN(ch)
@@ -34,13 +49,28 @@
         return true;
     }
 
-    function run() {
+    async function step() {
+        try {
+            machineInstance.step(state);
+            outputStr = showDec ? state.output_dec() : state.output();
+            errorStr = "";
+            state = state;
+            programIndex = machineInstance.get_index();
+            await sleep(STEP_INTERVAL_MS);
+        } catch (ex) {
+            console.error(ex);
+            errorStr = ex.toString();
+        }
+    }
+
+    async function run() {
         if (!programStr) {
             errorStr = "The program is empty!";
             return;
         }
 
         try {
+            paused = false;
             state = newState();
             machineInstance = program.parse(programStr);
             console.log(typeof machineInstance, machineInstance);
@@ -55,9 +85,12 @@
 
             }
             
-            machineInstance.execute(state);
-            outputStr = showDec ? state.output_dec() : state.output();
-            errorStr = "";
+            while (!paused && machineInstance.can_execute(state)) {
+                await step();
+            }
+
+            paused = true;
+            programIndex = 0;
         } catch (ex) {
             console.error(ex);
             errorStr = ex.toString();
@@ -77,16 +110,31 @@
             inputStr = preset.inputs;
         }
     }
+
+    function reset() {
+        paused = true;
+        machineInstance.reset();
+        state.reset();
+        state = state;
+    }
 </script>
 
 <div id="bf-interface">
-    <div id="bf-interface-input-area">
+    <!-- <div id="bf-interface-input-area">
         <textarea id="bf-input-program" name="bf-program-input" bind:value={programStr}></textarea>
         <button class="bf-button-input" type="button" on:click={run}>Run</button>
-    </div>
+        <button class="bf-button-input" type="button" on:click={reset}>Reset</button>
+    </div> -->
+    <BfProgramInputBox
+        inputText="{programStr}"
+        isRunning="{!paused}"
+        curIndex="{programIndex}"
+    />
+    <button class="bf-button-input" type="button" on:click={run}>Run</button>
+    <button class="bf-button-input" type="button" on:click={reset}>Reset</button>
     <BfMachineState 
-        tapes={state.get_display_tapes(32)}
-        tapeIndex={state.get_index()}
+        tapes={tapes}
+        tapeIndex={tapeIndex}
     />
     <section class="bf-interface-io">
         <div id="bf-interface-input-area">

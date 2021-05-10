@@ -30,7 +30,6 @@ pub fn greet() -> String {
     "Hello SVELTE from RUST".into()
 }
 
-
 // TODO: WASM does not support non-C-style enums. Look for an alternative impl.
 // #[wasm_bindgen]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -46,11 +45,6 @@ pub enum BfInstruction {
     Comment(char),
     End,
 }
-
-// pub trait BfInterpretable {
-//     fn run(step_by_step: bool);
-//     fn inspect();
-// }
 
 #[wasm_bindgen]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -91,6 +85,13 @@ impl BfMachineState {
             input_idx: 0,
             out_str: String::new(),
         }
+    }
+
+    pub fn reset(&mut self) {
+        self.tape = vec![0; 3000];
+        self.index = 0;
+        self.input_idx = 0;
+        self.out_str = String::new();
     }
 
     pub fn output(&self) -> String {
@@ -246,26 +247,32 @@ impl BfProgram {
         }
 
         self.index += 1;
+
+        // log!("tape: {:?}", &state.tape[0..32]);
+        // log!("index: {:?}, instruction: {:?}, input: {:?}, output: {:?}", 
+        //     &state.index, self.instructions[self.index], &state.log_input(), &state.output());
     }
 
     pub fn execute(&mut self, mut state: &mut BfMachineState) {
         while self.can_execute(state) {
-            // log!("tape: {:?}", &state.tape[0..32]);
-            // log!("index: {:?}, instruction: {:?}, input: {:?}, output: {:?}", 
-            //     &state.index, self.instructions[self.index], &state.log_input(), &state.output());
             self.step(&mut state);
         }
 
-        // log!("tape: {:?}", &state.get_display_tapes(32));
-        // log!("index: {:?}, instruction: {:?}, output: {:?}", &state.index, self.instructions[self.index], &state.output());
-        // log!("end");
+    }
+
+    pub fn reset(&mut self) {
+        self.index = 0;
     }
 
     pub fn needs_input(&self) -> bool {
         self.needs_input
     }
 
-    fn can_execute(&self, state: &mut BfMachineState) -> bool {
+    pub fn get_index(&self) -> usize {
+        self.index
+    }
+
+    pub fn can_execute(&self, state: &mut BfMachineState) -> bool {
         self.index < self.instructions.len()
             && self.instructions[self.index] != BfInstruction::End
             && !(self.instructions[self.index] == BfInstruction::Input && state.log_input().is_none())

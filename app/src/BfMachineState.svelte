@@ -37,7 +37,7 @@
     }
 
     div.tape-pointer {
-        width: 100%;
+        width: 31px;
     }
 
     div.tape-pointer em {
@@ -50,7 +50,7 @@
 
     }
 
-    div.tape-pointer em:before {
+    div.tape-pointer em::before {
         content: "";
         background-color: #ff3e00;
         display: block;
@@ -58,6 +58,7 @@
         height: 0;
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
+        border-bottom: 5px solid #ff3e00;
         margin-top: -5px;
 
     }
