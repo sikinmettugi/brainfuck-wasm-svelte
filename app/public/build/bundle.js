@@ -81,14 +81,6 @@
     function set_current_component(component) {
         current_component = component;
     }
-    function get_current_component() {
-        if (!current_component)
-            throw new Error(`Function called outside component initialization`);
-        return current_component;
-    }
-    function onDestroy(fn) {
-        get_current_component().$$.on_destroy.push(fn);
-    }
 
     const dirty_components = [];
     const binding_callbacks = [];
@@ -404,7 +396,7 @@
     		c: function create() {
     			li = element("li");
     			t = text(t_value);
-    			attr_dev(li, "class", "svelte-1orhb5n");
+    			attr_dev(li, "class", "svelte-dh4yer");
     			add_location(li, file, 11, 12, 360);
     		},
     		m: function mount(target, anchor) {
@@ -463,21 +455,21 @@
     			t2 = space();
     			div0 = element("div");
     			em = element("em");
-    			attr_dev(li, "class", "tape-elem-rightmost svelte-1orhb5n");
+    			attr_dev(li, "class", "tape-elem-rightmost svelte-dh4yer");
     			add_location(li, file, 15, 12, 440);
-    			attr_dev(ul, "class", "tape svelte-1orhb5n");
+    			attr_dev(ul, "class", "tape svelte-dh4yer");
     			add_location(ul, file, 9, 8, 296);
-    			attr_dev(em, "class", "svelte-1orhb5n");
+    			attr_dev(em, "class", "svelte-dh4yer");
     			add_location(em, file, 18, 12, 574);
-    			attr_dev(div0, "class", "tape-pointer svelte-1orhb5n");
+    			attr_dev(div0, "class", "tape-pointer svelte-dh4yer");
     			attr_dev(div0, "style", /*indexPositionStyle*/ ctx[1]);
     			add_location(div0, file, 17, 8, 507);
     			attr_dev(div1, "id", "bf-interface-state-block");
     			set_style(div1, "display", "inline-block");
-    			attr_dev(div1, "class", "svelte-1orhb5n");
+    			attr_dev(div1, "class", "svelte-dh4yer");
     			add_location(div1, file, 8, 4, 221);
     			attr_dev(section, "id", "bf-interface-machine-state");
-    			attr_dev(section, "class", "svelte-1orhb5n");
+    			attr_dev(section, "class", "svelte-dh4yer");
     			add_location(section, file, 7, 0, 174);
     		},
     		l: function claim(nodes) {
@@ -901,7 +893,61 @@
     	return child_ctx;
     }
 
-    // (155:12) {#if errorStr}
+    // (135:25) {:else}
+    function create_else_block$1(ctx) {
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text("Running...");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$1.name,
+    		type: "else",
+    		source: "(135:25) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (135:8) {#if paused}
+    function create_if_block_1(ctx) {
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text("Run");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1.name,
+    		type: "if",
+    		source: "(135:8) {#if paused}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (154:12) {#if errorStr}
     function create_if_block$1(ctx) {
     	let div;
     	let t;
@@ -911,8 +957,8 @@
     			div = element("div");
     			t = text(/*errorStr*/ ctx[5]);
     			attr_dev(div, "id", "bf-interface-error-box");
-    			attr_dev(div, "class", "svelte-wkoo8r");
-    			add_location(div, file$2, 155, 12, 4727);
+    			attr_dev(div, "class", "svelte-zd6pl1");
+    			add_location(div, file$2, 154, 12, 4644);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -930,14 +976,14 @@
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(155:12) {#if errorStr}",
+    		source: "(154:12) {#if errorStr}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (163:16) {#each presets as ps}
+    // (162:16) {#each presets as ps}
     function create_each_block$1(ctx) {
     	let li;
     	let button;
@@ -953,9 +999,9 @@
     			button = element("button");
     			t0 = text(t0_value);
     			t1 = space();
-    			add_location(button, file$2, 164, 24, 5036);
-    			attr_dev(li, "class", "svelte-wkoo8r");
-    			add_location(li, file$2, 163, 20, 5006);
+    			add_location(button, file$2, 163, 24, 4953);
+    			attr_dev(li, "class", "svelte-zd6pl1");
+    			add_location(li, file$2, 162, 20, 4923);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -993,7 +1039,7 @@
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(163:16) {#each presets as ps}",
+    		source: "(162:16) {#each presets as ps}",
     		ctx
     	});
 
@@ -1005,27 +1051,28 @@
     	let bfprograminputbox;
     	let t0;
     	let button0;
-    	let t2;
+    	let button0_disabled_value;
+    	let t1;
     	let button1;
-    	let t4;
+    	let t3;
     	let bfmachinestate;
-    	let t5;
+    	let t4;
     	let section0;
     	let div0;
-    	let t6;
+    	let t5;
     	let textarea0;
-    	let t7;
+    	let t6;
     	let div1;
-    	let t8;
+    	let t7;
     	let textarea1;
-    	let t9;
+    	let t8;
     	let br;
-    	let t10;
+    	let t9;
     	let input;
     	let label;
-    	let t12;
+    	let t11;
     	let div2;
-    	let t13;
+    	let t12;
     	let section1;
     	let div3;
     	let ul;
@@ -1042,6 +1089,14 @@
     			$$inline: true
     		});
 
+    	function select_block_type(ctx, dirty) {
+    		if (/*paused*/ ctx[7]) return create_if_block_1;
+    		return create_else_block$1;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block0 = current_block_type(ctx);
+
     	bfmachinestate = new BfMachineState({
     			props: {
     				tapes: /*tapes*/ ctx[8],
@@ -1050,7 +1105,7 @@
     			$$inline: true
     		});
 
-    	let if_block = /*errorStr*/ ctx[5] && create_if_block$1(ctx);
+    	let if_block1 = /*errorStr*/ ctx[5] && create_if_block$1(ctx);
     	let each_value = /*presets*/ ctx[0];
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -1065,31 +1120,31 @@
     			create_component(bfprograminputbox.$$.fragment);
     			t0 = space();
     			button0 = element("button");
-    			button0.textContent = "Run";
-    			t2 = space();
+    			if_block0.c();
+    			t1 = space();
     			button1 = element("button");
     			button1.textContent = "Reset";
-    			t4 = space();
+    			t3 = space();
     			create_component(bfmachinestate.$$.fragment);
-    			t5 = space();
+    			t4 = space();
     			section0 = element("section");
     			div0 = element("div");
-    			t6 = text("Input:\r\n            ");
+    			t5 = text("Input:\r\n            ");
     			textarea0 = element("textarea");
-    			t7 = space();
+    			t6 = space();
     			div1 = element("div");
-    			t8 = text("Output:\r\n            ");
+    			t7 = text("Output:\r\n            ");
     			textarea1 = element("textarea");
-    			t9 = space();
+    			t8 = space();
     			br = element("br");
-    			t10 = space();
+    			t9 = space();
     			input = element("input");
     			label = element("label");
     			label.textContent = "Print in dec";
-    			t12 = space();
+    			t11 = space();
     			div2 = element("div");
-    			if (if_block) if_block.c();
-    			t13 = space();
+    			if (if_block1) if_block1.c();
+    			t12 = space();
     			section1 = element("section");
     			div3 = element("div");
     			ul = element("ul");
@@ -1100,40 +1155,41 @@
 
     			attr_dev(button0, "class", "bf-button-input");
     			attr_dev(button0, "type", "button");
-    			add_location(button0, file$2, 136, 4, 3868);
+    			button0.disabled = button0_disabled_value = !/*paused*/ ctx[7];
+    			add_location(button0, file$2, 133, 4, 3712);
     			attr_dev(button1, "class", "bf-button-input");
     			attr_dev(button1, "type", "button");
-    			add_location(button1, file$2, 137, 4, 3947);
+    			add_location(button1, file$2, 136, 4, 3864);
     			attr_dev(textarea0, "id", "bf-input-stream");
-    			add_location(textarea0, file$2, 145, 12, 4225);
+    			add_location(textarea0, file$2, 144, 12, 4142);
     			attr_dev(div0, "id", "bf-interface-input-area");
-    			add_location(div0, file$2, 143, 8, 4157);
+    			add_location(div0, file$2, 142, 8, 4074);
     			attr_dev(textarea1, "id", "bf-output-stream");
     			attr_dev(textarea1, "name", "bf-output-stream");
     			textarea1.readOnly = true;
     			textarea1.value = /*outputStr*/ ctx[2];
-    			add_location(textarea1, file$2, 149, 12, 4385);
-    			add_location(br, file$2, 150, 12, 4486);
+    			add_location(textarea1, file$2, 148, 12, 4302);
+    			add_location(br, file$2, 149, 12, 4403);
     			attr_dev(input, "type", "checkbox");
     			attr_dev(input, "id", "bf-output-print-hex");
-    			add_location(input, file$2, 151, 12, 4504);
+    			add_location(input, file$2, 150, 12, 4421);
     			attr_dev(label, "for", "bf-output-print-hex");
-    			add_location(label, file$2, 151, 84, 4576);
+    			add_location(label, file$2, 150, 84, 4493);
     			attr_dev(div1, "id", "bf-interface-output-area");
-    			add_location(div1, file$2, 147, 8, 4315);
+    			add_location(div1, file$2, 146, 8, 4232);
     			attr_dev(div2, "id", "bf-interface-errors");
-    			add_location(div2, file$2, 153, 8, 4655);
-    			attr_dev(section0, "class", "bf-interface-io svelte-wkoo8r");
-    			add_location(section0, file$2, 142, 4, 4114);
-    			attr_dev(ul, "class", "presets svelte-wkoo8r");
-    			add_location(ul, file$2, 161, 12, 4925);
+    			add_location(div2, file$2, 152, 8, 4572);
+    			attr_dev(section0, "class", "bf-interface-io svelte-zd6pl1");
+    			add_location(section0, file$2, 141, 4, 4031);
+    			attr_dev(ul, "class", "presets svelte-zd6pl1");
+    			add_location(ul, file$2, 160, 12, 4842);
     			attr_dev(div3, "id", "bf-interface-presets");
-    			add_location(div3, file$2, 160, 8, 4880);
-    			attr_dev(section1, "class", "bf-interface-preset svelte-wkoo8r");
-    			add_location(section1, file$2, 159, 4, 4833);
+    			add_location(div3, file$2, 159, 8, 4797);
+    			attr_dev(section1, "class", "bf-interface-preset svelte-zd6pl1");
+    			add_location(section1, file$2, 158, 4, 4750);
     			attr_dev(div4, "id", "bf-interface");
-    			attr_dev(div4, "class", "svelte-wkoo8r");
-    			add_location(div4, file$2, 125, 0, 3375);
+    			attr_dev(div4, "class", "svelte-zd6pl1");
+    			add_location(div4, file$2, 122, 0, 3219);
     		},
     		l: function claim(nodes) {
     			throw new Error_1("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1143,30 +1199,31 @@
     			mount_component(bfprograminputbox, div4, null);
     			append_dev(div4, t0);
     			append_dev(div4, button0);
-    			append_dev(div4, t2);
+    			if_block0.m(button0, null);
+    			append_dev(div4, t1);
     			append_dev(div4, button1);
-    			append_dev(div4, t4);
+    			append_dev(div4, t3);
     			mount_component(bfmachinestate, div4, null);
-    			append_dev(div4, t5);
+    			append_dev(div4, t4);
     			append_dev(div4, section0);
     			append_dev(section0, div0);
-    			append_dev(div0, t6);
+    			append_dev(div0, t5);
     			append_dev(div0, textarea0);
     			set_input_value(textarea0, /*inputStr*/ ctx[1]);
-    			append_dev(section0, t7);
+    			append_dev(section0, t6);
     			append_dev(section0, div1);
-    			append_dev(div1, t8);
+    			append_dev(div1, t7);
     			append_dev(div1, textarea1);
-    			append_dev(div1, t9);
+    			append_dev(div1, t8);
     			append_dev(div1, br);
-    			append_dev(div1, t10);
+    			append_dev(div1, t9);
     			append_dev(div1, input);
     			input.checked = /*showDec*/ ctx[3];
     			append_dev(div1, label);
-    			append_dev(section0, t12);
+    			append_dev(section0, t11);
     			append_dev(section0, div2);
-    			if (if_block) if_block.m(div2, null);
-    			append_dev(div4, t13);
+    			if (if_block1) if_block1.m(div2, null);
+    			append_dev(div4, t12);
     			append_dev(div4, section1);
     			append_dev(section1, div3);
     			append_dev(div3, ul);
@@ -1194,6 +1251,21 @@
     			if (dirty & /*paused*/ 128) bfprograminputbox_changes.isRunning = !/*paused*/ ctx[7];
     			if (dirty & /*programIndex*/ 64) bfprograminputbox_changes.curIndex = /*programIndex*/ ctx[6];
     			bfprograminputbox.$set(bfprograminputbox_changes);
+
+    			if (current_block_type !== (current_block_type = select_block_type(ctx))) {
+    				if_block0.d(1);
+    				if_block0 = current_block_type(ctx);
+
+    				if (if_block0) {
+    					if_block0.c();
+    					if_block0.m(button0, null);
+    				}
+    			}
+
+    			if (!current || dirty & /*paused*/ 128 && button0_disabled_value !== (button0_disabled_value = !/*paused*/ ctx[7])) {
+    				prop_dev(button0, "disabled", button0_disabled_value);
+    			}
+
     			const bfmachinestate_changes = {};
     			if (dirty & /*tapes*/ 256) bfmachinestate_changes.tapes = /*tapes*/ ctx[8];
     			if (dirty & /*tapeIndex*/ 512) bfmachinestate_changes.tapeIndex = /*tapeIndex*/ ctx[9];
@@ -1212,16 +1284,16 @@
     			}
 
     			if (/*errorStr*/ ctx[5]) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$1(ctx);
-    					if_block.c();
-    					if_block.m(div2, null);
+    					if_block1 = create_if_block$1(ctx);
+    					if_block1.c();
+    					if_block1.m(div2, null);
     				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
     			}
 
     			if (dirty & /*runPresets, presets*/ 2049) {
@@ -1262,8 +1334,9 @@
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div4);
     			destroy_component(bfprograminputbox);
+    			if_block0.d();
     			destroy_component(bfmachinestate);
-    			if (if_block) if_block.d();
+    			if (if_block1) if_block1.d();
     			destroy_each(each_blocks, detaching);
     			mounted = false;
     			run_all(dispose);
@@ -1282,11 +1355,8 @@
     }
 
     const outputPlaceholder = "(stream output shows here)";
-
-    // let tickCount = 0;
     const STEP_INTERVAL_MS = 125;
 
-    // $: programIndex = !paused && machineInstance ? machineInstance.get_index() : 0;
     function sleep(ms) {
     	return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -1421,7 +1491,6 @@
     	};
 
     	$$self.$capture_state = () => ({
-    		onDestroy,
     		BfMachineState,
     		BfProgramInputBox,
     		state,

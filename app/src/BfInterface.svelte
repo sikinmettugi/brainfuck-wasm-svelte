@@ -1,5 +1,4 @@
 <script>
-    import { onDestroy } from 'svelte';
     import BfMachineState from './BfMachineState.svelte';
     import BfProgramInputBox from './BfProgramInputBox.svelte';
 
@@ -19,12 +18,10 @@
     let programIndex = 0;
 
     let paused = true;
-    // let tickCount = 0;
     const STEP_INTERVAL_MS = 125;
 
     $: tapes = state.get_display_tapes(32);
     $: tapeIndex = state.get_index();
-    // $: programIndex = !paused && machineInstance ? machineInstance.get_index() : 0;
 
     function sleep(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
@@ -134,7 +131,9 @@
         isRunning="{!paused}"
         curIndex="{programIndex}"
     />
-    <button class="bf-button-input" type="button" on:click={run}>Run</button>
+    <button class="bf-button-input" type="button" on:click={run} disabled={!paused}>
+        {#if paused} Run {:else} Running... {/if}
+    </button>
     <button class="bf-button-input" type="button" on:click={reset}>Reset</button>
     <BfMachineState 
         tapes={tapes}
@@ -179,20 +178,16 @@
     ul.presets li {
         display: inline-block;
         list-style-type: none;
-        /* border: 1px solid #aeaeae; */
-        /* width: 30px; */
         height: 23px;
         text-align: center;
         padding-top: 7px;
         padding-left: 10px;
-        /* border-right: none; */
         color: gray;
     }
 
 	#bf-interface {
 		text-align: center;
 		padding: 1em;
-		/* max-width: 480px; */
 		margin: 0 auto;
 	}
 
