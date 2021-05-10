@@ -20,7 +20,7 @@
 
     let paused = true;
     // let tickCount = 0;
-    const STEP_INTERVAL_MS = 500;
+    const STEP_INTERVAL_MS = 125;
 
     $: tapes = state.get_display_tapes(32);
     $: tapeIndex = state.get_index();
@@ -84,6 +84,10 @@
                 }
 
             }
+
+            // push input box update first
+            state = state;
+            await sleep(STEP_INTERVAL_MS);
             
             while (!paused && machineInstance.can_execute(state)) {
                 await step();

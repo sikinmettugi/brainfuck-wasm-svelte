@@ -5,7 +5,6 @@
 
     let displayElem = "";
     $: if (isRunning && (curIndex >= 0 && curIndex < inputText.length)) {
-        console.log("display:", curIndex);
         let head = inputText.slice(0, curIndex);
         let caratChar = inputText[curIndex];
         let tail = inputText.slice(curIndex + 1);
