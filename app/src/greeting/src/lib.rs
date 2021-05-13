@@ -163,8 +163,7 @@ impl BfProgram {
         // stack for "[" and "]"
         let mut crotchets: Vec<usize> = Vec::new();
         let mut needs_input = false;
-        // TODO: how to check if the program is valid?
-        // how to alert the frontend that the input program is invald?
+
         for (i, c) in prg.chars().enumerate() {
             let mut cur_inst = if CHAR_TO_INST_MAP.contains_key(&c) {
                 CHAR_TO_INST_MAP[&c]
@@ -186,7 +185,6 @@ impl BfProgram {
                             cur_inst = BfInstruction::JumpClose(i - idx);
                         },
                         None => {
-                            // TODO: what if the crotches are not in pair?
                             return Err(JsValue::from("invalid crotchet pairs: no [ matched"));
                         }
                     }

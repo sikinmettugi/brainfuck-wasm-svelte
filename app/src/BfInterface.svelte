@@ -1,6 +1,7 @@
 <script>
     import BfMachineState from './BfMachineState.svelte';
     import BfProgramInputBox from './BfProgramInputBox.svelte';
+    import { programInput } from './inputStore';
 
     export let state;
 	export let program;
@@ -12,7 +13,6 @@
     let outputStr = outputPlaceholder;
     let showDec = false;
 
-    let programStr = "";
     let machineInstance = {};
     let errorStr = "";
     let programIndex = 0;
@@ -61,7 +61,7 @@
     }
 
     async function run() {
-        if (!programStr) {
+        if (!$programInput) {
             errorStr = "The program is empty!";
             return;
         }
@@ -69,8 +69,7 @@
         try {
             paused = false;
             state = newState();
-            machineInstance = program.parse(programStr);
-            // console.log(typeof machineInstance, machineInstance);
+            machineInstance = program.parse($programInput);
             if (machineInstance.needs_input()) {
                 if (!inputStr) {
                     throw new Error("The input is empty!");
@@ -103,9 +102,7 @@
             return;
         }
 
-        // console.log("running preset", preset);
-
-        programStr = preset.program;
+        $programInput = preset.program;
         showDec = preset.outputAsDec;
         if (preset.inputs) {
             inputStr = preset.inputs;
@@ -121,13 +118,7 @@
 </script>
 
 <div id="bf-interface">
-    <!-- <div id="bf-interface-input-area">
-        <textarea id="bf-input-program" name="bf-program-input" bind:value={programStr}></textarea>
-        <button class="bf-button-input" type="button" on:click={run}>Run</button>
-        <button class="bf-button-input" type="button" on:click={reset}>Reset</button>
-    </div> -->
     <BfProgramInputBox
-        inputText="{programStr}"
         isRunning="{!paused}"
         curIndex="{programIndex}"
     />

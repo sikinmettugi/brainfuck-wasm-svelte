@@ -1,9 +1,15 @@
 <script>
-    export let inputText = "";
+    import { programInput } from './inputStore';
+
     export let isRunning;
     export let curIndex;
 
+    let inputText = "";
     let displayElem = "";
+    $: {
+        inputText = $programInput;
+        console.log(`input: ${inputText}`);
+    }
     $: if (isRunning && (curIndex >= 0 && curIndex < inputText.length)) {
         let head = inputText.slice(0, curIndex);
         let caratChar = inputText[curIndex];
@@ -14,7 +20,7 @@
 
 <div id="bf-interface-input-area">
     {#if !isRunning}
-    <textarea id="bf-input-program" name="bf-program-input" bind:value={inputText} ></textarea>
+    <textarea id="bf-input-program" name="bf-program-input" bind:value={$programInput} ></textarea>
     {:else}
     <div id="bf-interface-program-preview">
         {@html displayElem}
