@@ -6,10 +6,7 @@
 
     let inputText = "";
     let displayElem = "";
-    $: {
-        inputText = $programInput;
-        console.log(`input: ${inputText}`);
-    }
+    $: inputText = $programInput;
     $: if (isRunning && (curIndex >= 0 && curIndex < inputText.length)) {
         let head = inputText.slice(0, curIndex);
         let caratChar = inputText[curIndex];
